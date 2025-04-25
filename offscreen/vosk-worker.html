@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; worker-src 'self' blob:; child-src 'self' blob:; connect-src 'self' data: filesystem:">
+  <title>Vosk Worker Page</title>
+  
+  <!-- First, load the WebAssembly module loader -->
+  <script src="../wasm/vosk-model-en-us-0.22-lgraph/vosk.wasm.js"></script>
+  
+  <!-- Import Vosk library -->
+  <script type="module" src="../lib/vosk-browser-no-indexeddb.js"></script> <!-- Use no-indexeddb version as module -->
+  
+  <script type="module"> // Use module type again
+    import { createModel, Recognizer } from '../lib/vosk-browser-no-indexeddb.js'; // Import both createModel and Recognizer
+
+    // Set up debugging
+    function debugLog(message) {
+      console.log('[VoskWorker] ' + message);
+      
+      // Also try to send the log to the parent window
+      try {
+        window.parent.postMessage({
+          type: 'WORKER_LOG',
+          message: message
+        }, '*');
+      } catch (e) {
+        console.error('[VoskWorker] Error sending log:', e);
+      }
+    }
+    
+    debugLog('Initializing Vosk worker page');
+    
+    // Check if WebAssembly module is available
+    if (typeof window.voskWasm !== 'undefined') {
+      debugLog('WebAssembly module loaded successfully');
+    } else {
+      debugLog('WARNING: WebAssembly module not loaded yet or unavailable');
+      
+      // Try to initialize the WebAssembly module if the loader is present
+      if (typeof VoskWasmLoader !== 'undefined') {
+        debugLog('VoskWasmLoader found, attempting to initialize WebAssembly module');
+        VoskWasmLoader().then(module => {
+          window.voskWasm = module;
+          debugLog('WebAssembly module initialized successfully');
+        }).catch(err => {
+          debugLog('Error initializing WebAssembly module: ' + err.message);
+        });
+      } else {
+        debugLog('VoskWasmLoader not found, real transcription may not be possible');
+      }
+    }
+    
+    // When the page loads, immediately send a ready message
+    window.addEventListener('load', () => {
+      debugLog('Worker page loaded, sending WORKER_READY message');
+      try {
+        window.parent.postMessage({ type: 'WORKER_READY' }, '*');
+      } catch (e) {
+        debugLog('Error sending ready message: ' + e.message);
+      }
+    });
+
+    // Global Vosk model instance
+    let voskModel = null;
+
+    // Handle messages from the parent window
+    window.addEventListener('message', async (event) => {
+      debugLog('Received message: ' + event.data.type);
+
+      try {
+        const message = event.data;
+        
+        switch (message.type) {
+          case 'INIT_VOSK':
+            // Expect modelPath (vosk-browser.js will load components)
+            if (!message.modelPath) { // Check only for modelPath
+              throw new Error('INIT_VOSK message missing modelPath');
+            }
+            debugLog('Initializing Vosk with model path: ' + message.modelPath);
+            // Pass only modelPath to the local initializeVosk
+            const result = await initializeVosk(message.modelPath); 
+            debugLog('Init result: ' + (result.success ? 'success' : 'failed: ' + result.error));
+            
+            window.parent.postMessage({
+              type: 'INIT_RESULT',
+              success: result.success,
+              error: result.error
+            }, '*');
+            break;
+
+          case 'TRANSCRIBE':
+            debugLog('--- TRANSCRIBE message received ---');
+            // Re-enable transcription logic
+            if (!message.audioData || !message.sampleRate || !message.requestId) {
+              throw new Error('TRANSCRIBE message missing required fields');
+            }
+            if (!voskModel) {
+              throw new Error('Vosk model not initialized before transcription request');
+            }
+            
+            // Log the audio data characteristics to help with debugging
+            debugLog(`Received audio data with ${message.audioData.length} samples at ${message.sampleRate}Hz`);
+            
+            const text = await transcribeAudio(message.audioData, message.sampleRate, message.requestId);
+            debugLog('Transcription result: ' + text);
+            
+            window.parent.postMessage({
+              type: 'TRANSCRIPTION_RESULT',
+              requestId: message.requestId,
+              text: text
+            }, '*');
+            break;
+            
+          default:
+            debugLog('Unknown message type: ' + message.type);
+            break;
+        }
+      } catch (error) {
+        debugLog('Error processing message: ' + error.message);
+        // Optionally send error back to parent
+        window.parent.postMessage({
+          type: 'WORKER_ERROR',
+          message: error.message,
+          originalType: event.data.type
+        }, '*');
+      }
+    });
+
+    // Initialize Vosk using model path (vosk-browser.js handles fetching)
+    async function initializeVosk(modelPath) { // Only accept modelPath
+      debugLog('Initializing Vosk function called with path: ' + modelPath);
+      if (voskModel) {
+        debugLog('Vosk model already initialized.');
+        return { success: true };
+      }
+      
+      try {
+        debugLog('Attempting to use imported createModel...');
+        
+        debugLog('Creating Vosk model using path: ' + modelPath);
+        // Let createModel handle fetching based on the path/URL
+        const modelUrl = new URL(`../${modelPath}`, location.origin).href; 
+        debugLog('Constructed model URL: ' + modelUrl);
+        
+        // Use the imported createModel
+        voskModel = await createModel(modelUrl); // Use imported createModel
+
+        if (!voskModel) {
+          throw new Error('Imported createModel returned null or undefined');
+        }
+        
+        debugLog('Vosk model created successfully.');
+        
+        return { success: true };
+
+      } catch (error) {
+        voskModel = null; // Ensure model is null on failure
+        debugLog('Error initializing Vosk: ' + error.message + '\n' + error.stack);
+        return { success: false, error: error.message };
+      }
+    }
+
+    // Transcribe audio
+    async function transcribeAudio(audioData, sampleRate, requestId) {
+      if (!voskModel) {
+        throw new Error('Vosk model is not initialized.');
+      }
+      
+      let recognizer;
+      try {
+        debugLog('Creating recognizer...');
+        // Use the imported Recognizer class
+        if (typeof Recognizer !== 'function') {
+          throw new Error('Imported Recognizer is not a function.');
+        }
+        recognizer = new Recognizer({ model: voskModel, sampleRate: sampleRate });
+        debugLog('Recognizer created.');
+        
+        debugLog('Accepting waveform...');
+        recognizer.acceptWaveform(audioData);
+        debugLog('Waveform accepted.');
+        
+        debugLog('Getting final result...');
+        const result = recognizer.finalResult();
+        debugLog('Final result obtained.');
+        
+        return result.text;
+        
+      } catch (error) {
+        debugLog('Error during transcription: ' + error.message + '\n' + error.stack);
+        throw new Error('Transcription failed: ' + error.message);
+      } finally {
+        // Ensure the recognizer is cleaned up
+        if (recognizer) {
+          recognizer.free(); // Use free() as provided by the no-indexeddb version
+          debugLog('Recognizer cleaned up.');
+        }
+      }
+    }
+
+    // Signal ready to parent window
+    debugLog('Vosk worker initialized and sending ready message');
+    try {
+      window.parent.postMessage({ type: 'WORKER_READY' }, '*');
+    } catch (e) {
+      debugLog('Error sending ready message: ' + e.message);
+    }
+    
+  </script>
+</head>
+<body>
+  <h1>Vosk Worker</h1>
+  <p>This page handles Vosk processing in a sandboxed environment.</p>
+  <div id="status">Status: Initializing...</div>
+  
+  <script>
+    // Update the status display
+    document.getElementById('status').textContent = 'Status: Ready';
+  </script>
+</body>
+</html>

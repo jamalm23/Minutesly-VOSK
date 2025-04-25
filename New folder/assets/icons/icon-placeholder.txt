@@ -1,0 +1,16 @@
+This is a placeholder file for the extension icons.
+
+In a real implementation, you would replace these with proper icon files:
+
+1. icon16.png (16x16 pixels)
+2. icon48.png (48x48 pixels)
+3. icon128.png (128x128 pixels)
+
+The icons should follow the Chrome extension design guidelines and represent
+the audio recording and transcription functionality of the extension.
+
+Suggested icon design:
+- Microphone icon
+- Sound wave visualization
+- Blue color scheme matching the extension UI
+- Clean, minimalist design following Material Design principles

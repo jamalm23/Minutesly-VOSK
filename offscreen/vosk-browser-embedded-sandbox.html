@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Vosk Processing Sandbox</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    h1, h2 {
+      color: #333;
+    }
+    
+    #log {
+      height: 300px;
+      overflow: auto;
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 20px 0;
+      font-family: monospace;
+      background-color: #f5f5f5;
+      white-space: pre-wrap;
+    }
+    
+    .error {
+      color: red;
+    }
+    
+    .success {
+      color: green;
+      font-weight: bold;
+    }
+    
+    #status {
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    
+    button {
+      padding: 8px 16px;
+      margin: 10px 10px 10px 0;
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    button:hover {
+      background-color: #1d4ed8;
+    }
+    
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    
+    .debug-panel {
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin: 20px 0;
+      background-color: #f8f9fa;
+      border-radius: 4px;
+    }
+    
+    .model-info {
+      font-family: monospace;
+      margin: 10px 0;
+      padding: 10px;
+      background-color: #f0f0f0;
+      border-radius: 4px;
+    }
+    
+    textarea {
+      width: 100%;
+      height: 80px;
+      margin: 10px 0;
+      font-family: monospace;
+    }
+    
+    details {
+      margin: 10px 0;
+    }
+    
+    summary {
+      cursor: pointer;
+      font-weight: bold;
+      padding: 5px;
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Vosk Processing Sandbox</h1>
+  <div id="status">Initializing...</div>
+  
+  <div class="debug-panel">
+    <h2>Debug Tools</h2>
+    <div>
+      <button id="directInitBtn">Initialize Vosk Directly</button>
+      <button id="checkFilesBtn">Check Model Files</button>
+      <button id="checkCacheBtn">Check Cache</button>
+      <button id="testVoskBtn">Test Vosk with Sample Audio</button>
+    </div>
+    
+    <details>
+      <summary>Model Information</summary>
+      <div id="model-info" class="model-info">No model loaded</div>
+    </details>
+    
+    <details>
+      <summary>Test Transcription</summary>
+      <div>
+        <textarea id="transcriptionResult" readonly placeholder="Transcription results will appear here"></textarea>
+      </div>
+      <div>
+        <button id="generateTestAudioBtn">Generate Test Audio</button>
+        <button id="transcribeTestAudioBtn" disabled>Transcribe Test Audio</button>
+      </div>
+    </details>
+  </div>
+  
+  <h2>Log</h2>
+  <div id="log"></div>
+  
+  <!-- Include vosk.wasm.js - this makes the WASM available -->
+  <script src="../wasm/vosk-model-en-us-0.22-lgraph/vosk.wasm.js"></script>
+  
+  <!-- Load the Vosk browser library with IndexedDB support -->
+  <script src="../lib/vosk-browser.js"></script>
+  
+  <!-- Load the sandbox script -->
+  <script src="vosk-browser-sandbox.js"></script>
+</body>
+</html>

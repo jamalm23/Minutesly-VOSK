@@ -1,0 +1,428 @@
+/* Audio Transcription Extension - Dashboard Styles */
+
+/* Dashboard Summary Cards */
+.dashboard-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.summary-card {
+  background-color: var(--surface-color);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--shadow-1);
+  transition: transform var(--animation-duration) ease, box-shadow var(--animation-duration) ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-2);
+}
+
+.card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: rgba(66, 133, 244, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-icon .material-symbols-outlined {
+  font-size: 24px;
+  color: var(--primary-color);
+}
+
+.card-content h3 {
+  font-size: 14px;
+  margin: 0 0 4px 0;
+  color: var(--text-secondary);
+}
+
+.metric {
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0;
+  color: var(--text-color);
+}
+
+/* Dashboard Tabs */
+.dashboard-tabs {
+  margin-bottom: 24px;
+}
+
+.tab-header {
+  display: flex;
+  border-bottom: 1px solid var(--divider-color);
+  margin-bottom: 16px;
+}
+
+.tab-button {
+  padding: 12px 16px;
+  color: var(--text-secondary);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  font-weight: 500;
+}
+
+.tab-button:hover {
+  color: var(--primary-color);
+}
+
+.tab-button.active {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+/* Dashboard Sections */
+.dashboard-section {
+  margin-bottom: 32px;
+}
+
+.dashboard-section h2 {
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+/* Empty States */
+.empty-placeholder, .analytics-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background-color: var(--surface-color);
+  border-radius: 8px;
+  border: 1px dashed var(--divider-color);
+  text-align: center;
+}
+
+.empty-placeholder .material-symbols-outlined,
+.analytics-placeholder .material-symbols-outlined {
+  font-size: 32px;
+  color: var(--inactive-color);
+  margin-bottom: 12px;
+}
+
+.empty-placeholder p,
+.analytics-placeholder p {
+  color: var(--text-secondary);
+  max-width: 400px;
+  margin: 0 0 16px 0;
+}
+
+.empty-placeholder button {
+  margin-top: 12px;
+}
+
+/* Recent Recordings */
+.recent-recordings {
+  margin-bottom: 24px;
+}
+
+/* Note: .recording-item styles might be used by the new tab too, keeping them */
+.recording-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--divider-color);
+}
+
+.recording-item:last-child {
+  border-bottom: none;
+}
+
+.recording-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.recording-title {
+  font-weight: 500;
+  margin: 0 0 4px 0;
+}
+
+.recording-meta {
+  display: flex;
+  gap: 16px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* Topics Chart */
+.topics-chart {
+  height: 220px;
+  position: relative;
+}
+
+/* Coming Soon Features */
+.features-preview h2 {
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+.feature-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.feature-card {
+  padding: 24px;
+  border-radius: 8px;
+  background-color: var(--surface-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: var(--shadow-1);
+}
+
+.feature-card .material-symbols-outlined {
+  font-size: 32px;
+  color: var(--primary-color);
+  margin-bottom: 16px;
+}
+
+.feature-card h3 {
+  margin: 0 0 8px 0;
+}
+
+.feature-card p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* --- Recordings Tab Specific Styles (NEW/REVISED) --- */
+#recordings-tab-content h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.recordings-controls {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+#dashboard-search-input {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex-grow: 1;
+    max-width: 400px;
+}
+
+#dashboard-recordings-list-container {
+    /* Keep background/border if desired, or remove for simpler integration */
+    /* background-color: #fff; */
+    /* border: 1px solid #e0e0e0; */
+    /* border-radius: 8px; */
+    padding: 0; /* Remove extra padding */
+    min-height: 200px; /* Adjust as needed */
+}
+
+.loading-message {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+    padding: 50px 0;
+}
+
+.dashboard-date-header {
+    font-weight: bold;
+    margin: 20px 0 10px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eee;
+    color: var(--text-secondary, #5f6368);
+    font-size: 0.9em;
+}
+
+.dashboard-recording-item {
+    padding: 15px 10px; /* Adjust padding */
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: flex-start; /* Align items to the top */
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.dashboard-recording-item:last-child {
+    border-bottom: none;
+}
+
+.dashboard-item-info {
+    flex-grow: 1;
+    overflow: hidden; 
+    display: flex; /* Use flexbox for internal layout */
+    flex-direction: column; /* Stack title, details, analysis */
+    gap: 8px; /* Space between sections */
+}
+
+.dashboard-item-title {
+    font-weight: 500;
+    font-size: 1.1em; /* Slightly larger title */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dashboard-item-details {
+    font-size: 0.85em;
+    color: #666;
+    line-height: 1.5; /* Slightly more line height */
+    display: flex; /* Arrange details inline */
+    flex-wrap: wrap; /* Allow wrapping */
+    gap: 5px 15px; /* Row and column gap */
+}
+.dashboard-item-details span {
+   display: inline-flex; /* Align icon and text */
+   align-items: center;
+   gap: 4px; /* Space between icon and text */
+   white-space: nowrap; /* Prevent wrapping within a detail */
+}
+.dashboard-item-details .material-symbols-outlined {
+    font-size: 16px; /* Smaller icons */
+    color: #888; /* Lighter icon color */
+}
+.dashboard-item-details .page-title {
+    /* Existing styles, but remove display:block if added before */
+    font-style: italic;
+    color: #777;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* NEW: Styles for the analysis section */
+.dashboard-item-analysis {
+    font-size: 0.8em;
+    color: #777;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px 15px; /* Row and column gap */
+    padding-top: 8px; /* Slightly more padding */
+    border-top: 1px dashed #eee; 
+}
+
+.dashboard-item-analysis span {
+    white-space: nowrap;
+    background-color: #f5f5f5; /* Light background for tags */
+    padding: 3px 7px; /* Adjust padding */
+    border-radius: 4px; /* Slightly more rounded */
+    display: inline-flex; /* Ensure alignment if icons were added */
+    align-items: center;
+    gap: 3px;
+}
+
+.dashboard-item-analysis b {
+    color: #555; 
+    margin-right: 4px; /* Slightly more space after label */
+}
+
+/* Specific styles for different tags if needed */
+.item-analysis-status {
+    /* Optional: Add specific background/color based on status */
+}
+.item-analysis-summary-status {
+    /* Optional: Add specific background/color based on status */
+}
+.item-analysis-lang {
+    /* Optional: Add specific styling */
+}
+.item-analysis-speakers {
+     /* Optional: Add specific styling */
+}
+.item-analysis-importance {
+    /* Optional: Add specific styling */
+}
+.item-analysis-sentiment {
+    /* Optional: Add specific styling */
+}
+.item-analysis-topics {
+    /* Optional: Add specific styling */
+}
+.item-analysis-keywords {
+    /* Optional: Add specific styling */
+}
+.item-analysis-actions {
+    /* Optional: Add specific styling */
+}
+.item-analysis-followup {
+    /* Optional: Add specific styling */
+}
+
+.dashboard-item-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0; 
+    align-items: center; /* Vertically center buttons */
+}
+
+.dashboard-item-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary, #5f6368);
+    transition: background-color 0.2s ease;
+}
+.dashboard-item-actions button:hover {
+    background-color: rgba(0,0,0,0.06);
+}
+.dashboard-item-actions button .material-symbols-outlined {
+    font-size: 20px;
+}
+
+#dashboard-audio-player {
+    margin-top: 15px;
+    width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .dashboard-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .feature-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .feature-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-summary {
+    grid-template-columns: 1fr;
+  }
+  
+  .tab-button {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+}

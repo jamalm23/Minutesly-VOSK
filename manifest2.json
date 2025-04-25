@@ -1,0 +1,96 @@
+{
+    "manifest_version": 3,
+    "name": "Audio Capture Extension",
+    "description": "Captures system audio and generates meeting summaries with a local-first approach",
+    "version": "1.0.0",
+    "permissions": [
+      "tabCapture",
+      "downloads",
+      "storage",
+      "identity",
+      "system.display",
+      "tabs",
+      "activeTab",
+      "scripting",
+      "audioCapture",
+      "offscreen",
+      "windows"
+    ],
+    "host_permissions": [
+      "https://huggingface.co/*",
+      "http://*/*",
+      "https://*/*",
+      "file:///*"
+    ],
+    "action": {
+      "default_title": "Audio Capture Extension - VOSK",
+      "default_popup": "action_popup.html"
+    },
+    "background": {
+      "service_worker": "background/service-worker.js",
+      "type": "module"
+    },
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["content/content-script.js"],
+        "run_at": "document_start"
+      }
+    ],
+    "offscreen": {
+      "page": "offscreen/offscreen.html"
+    },
+    "content_security_policy": {
+
+      "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; worker-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com",
+
+      "sandbox": "sandbox allow-scripts allow-forms allow-popups allow-modals; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'; worker-src 'self' blob:;"
+    },
+    "sandbox": {
+      "pages": [
+        "offscreen/vosk-browser-embedded-sandbox.html",
+        "offscreen/sandbox-test.html",
+        "offscreen/vosk-test.html",
+        "offscreen/vosk-sandbox-test.html"
+      ]
+    },
+    "cross_origin_embedder_policy": {
+      "value": "require-corp"
+    },
+    "cross_origin_opener_policy": {
+      "value": "same-origin"
+    },
+    "web_accessible_resources": [
+      {
+        "resources": [
+          "popup/*",
+          "lib/*",
+          "lib/vosk-browser.js",
+          "ui/pages/*",
+          "ui/pages/timeline/*",
+          "offscreen/*",
+          "offscreen/vosk-sandbox.js",
+          "offscreen/sandbox-test.js",
+          "offscreen/vosk-test.js",
+          "offscreen/vosk-sandbox-ui.js",
+          "offscreen/vosk-sandbox-test.html",
+          "offscreen/sandbox-integration.js",
+          "wasm/*",
+          "assets/*",
+          "content/*",
+          "node_modules/lamejs/lame.min.js",
+          "debug-helper.js",
+          "content/simple-recorder.js",
+          "content/force-download.js",
+          "content/injected-recorder.js",
+          "content/panel.html",
+          "content/panel.css",
+          "content/panel.js",
+          "wasm/vosk-model-en-us-0.22-lgraph/**",
+          "wasm/vosk-model-small-en-us-0.15/**",
+          "transcription-test.html"
+        ],
+        "matches": ["<all_urls>"]
+      }
+    ]
+  }

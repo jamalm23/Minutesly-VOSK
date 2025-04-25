@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Sandbox Test</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      padding: 20px;
+    }
+    
+    h1 {
+      color: #333;
+    }
+    
+    #log {
+      height: 300px;
+      overflow: auto;
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 20px 0;
+      font-family: monospace;
+      background-color: #f5f5f5;
+    }
+    
+    button {
+      padding: 8px 16px;
+      margin: 5px;
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    button:hover {
+      background-color: #1d4ed8;
+    }
+  </style>
+</head>
+<body>
+  <h1>Sandbox Testing</h1>
+  
+  <div>
+    <button id="testEval">Test eval()</button>
+    <button id="testFunction">Test Function constructor</button>
+    <button id="testCSP">Test CSP Status</button>
+  </div>
+  
+  <div id="log"></div>
+  
+  <script src="sandbox-test.js"></script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audio Transcription</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Wrap main content -->
+    <div id="mainPanel">
+      <header>
+        <h1>Audio Transcription</h1>
+        <div class="header-buttons">
+          <button id="settingsButton" title="Settings">
+            <span class="material-symbols-outlined">settings</span>
+          </button>
+          <button id="minimizeButton" title="Minimize">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="recording-status">
+        <div id="statusIndicator" class="status-indicator status-inactive"></div>
+        <span id="statusText">Not Recording</span>
+      </div>
+
+      <div class="visualization-container">
+        <canvas id="audioVisualization" width="300" height="80"></canvas>
+      </div>
+
+      <div class="meeting-info">
+        <div class="info-row">
+          <span class="label">Duration:</span>
+          <span id="duration" class="value">00:00:00</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Source:</span>
+          <span id="source" class="value">None</span>
+        </div>
+      </div>
+      
+      <!-- Transcription info box -->
+      <div class="transcription-info-box">
+        <h3><span class="material-symbols-outlined">info</span> Transcription Guide</h3>
+        <p>After stopping a recording:</p>
+        <ol>
+          <li>Automatic transcription will begin</li>
+          <li>Click "Recordings" in the footer</li>
+          <li>Find your recording in the list</li>
+          <li>Click "<strong>✓ Transcription available</strong>" to view the transcript</li>
+        </ol>
+      </div>
+
+      <div class="controls">
+        <div class="source-selector">
+          <button id="tabButton" class="source-button selected" title="Record tab audio">
+            <span class="material-symbols-outlined">tab</span>
+            <span>Tab</span>
+          </button>
+          <button id="screenButton" class="source-button" title="Record screen audio">
+            <span class="material-symbols-outlined">monitor</span>
+            <span>Screen</span>
+          </button>
+        </div>
+
+        <div class="recording-controls">
+          <button id="startButton" class="control-button primary" title="Start recording">
+            <span class="material-symbols-outlined">fiber_manual_record</span>
+            <span>Start</span>
+          </button>
+          <button id="pauseButton" class="control-button" title="Pause recording" disabled>
+            <span class="material-symbols-outlined">pause</span>
+            <span>Pause</span>
+          </button>
+          <button id="stopButton" class="control-button" title="Stop recording" disabled>
+            <span class="material-symbols-outlined">stop</span>
+            <span>Stop</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="settingsPanel" class="settings-panel hidden">
+        <h2>Settings</h2>
+        <div class="setting">
+          <label for="audioQuality">Audio Quality:</label>
+          <select id="audioQuality">
+            <option value="low">Low (smaller files)</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High (better quality)</option>
+          </select>
+        </div>
+        <div class="setting">
+          <label for="automaticTranscription">
+            <input type="checkbox" id="automaticTranscription" checked>
+            Automatic Transcription
+          </label>
+        </div>
+        <div class="setting">
+          <label for="speakerIdentification">
+            <input type="checkbox" id="speakerIdentification" checked>
+            Speaker Identification
+          </label>
+        </div>
+        <div class="setting">
+          <label for="saveRecordings">
+            <input type="checkbox" id="saveRecordings" checked>
+            Save Audio Recordings
+          </label>
+        </div>
+        <div class="settings-actions">
+          <button id="saveSettingsButton" class="control-button primary">Save</button>
+        </div>
+      </div>
+
+      <footer>
+        <button id="recordingsButton" class="footer-button" title="View recordings">
+          <span class="material-symbols-outlined">list</span>
+          Recordings
+        </button>
+        <button id="dashboardButton" class="footer-button" title="Open dashboard">
+          <span class="material-symbols-outlined">dashboard</span>
+          Dashboard
+        </button>
+        <div class="footer-button-group">
+          <button id="whisperTestButton" class="footer-button small" title="Test Whisper Transcription">
+            <span class="material-symbols-outlined">record_voice_over</span>
+            Whisper Test
+          </button>
+          <button id="transcriptionTestButton" class="footer-button small" title="Test Content Script Transcription">
+            <span class="material-symbols-outlined">mic</span>
+            CS Test
+          </button>
+        </div>
+      </footer>
+    </div> <!-- End of #mainPanel -->
+
+    <!-- Recordings List Panel (Initially Hidden) -->
+    <div id="recordingsListPanel" class="panel hidden">
+      <div class="panel-header">
+        <button id="backToMainButton" title="Back" class="header-button">
+          <span class="material-symbols-outlined">arrow_back</span>
+        </button>
+        <h2>Recordings</h2>
+        <input type="search" id="searchInput" placeholder="Search recordings..." class="search-input">
+      </div>
+      <!-- NEW Row for Title Filter Button -->
+      <div class="filter-row title-filter-row">
+        <button id="titleFilterButton" class="filter-button" title="Filter by meeting title">
+          All Titles 
+          <span class="material-symbols-outlined filter-arrow">arrow_drop_down</span>
+        </button>
+      </div>
+      <!-- End NEW Row -->
+      <!-- Add Date Filter Row -->
+      <div class="filter-row">
+          <label for="startDateFilter" class="filter-label">From:</label>
+          <input type="date" id="startDateFilter" class="date-input">
+          <label for="endDateFilter" class="filter-label">To:</label>
+          <input type="date" id="endDateFilter" class="date-input">
+          <button id="clearDatesButton" class="clear-button" title="Clear dates">
+             <span class="material-symbols-outlined">close</span>
+          </button>
+      </div>
+      <!-- Add Checkbox Dropdown Container -->
+      <div id="titleFilterDropdown" class="filter-dropdown hidden">
+        <!-- Checkboxes will be populated here -->
+      </div>
+      <!-- End Checkbox Dropdown Container -->
+      <!-- Add Audio Player Element -->
+      <div class="audio-player-container">
+         <audio id="audioPlayer" controls style="width: 100%; height: 40px; display: none;"></audio>
+      </div>
+      <!-- End Audio Player -->
+      <div id="recordingsListContainer" class="list-container">
+        <p class="empty-state">No recordings found.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module" src="modules/main.js"></script>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

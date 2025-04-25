@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Vosk Sandbox Test</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    h1, h2 {
+      color: #333;
+    }
+    
+    #log {
+      height: 300px;
+      overflow: auto;
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 20px 0;
+      font-family: monospace;
+      background-color: #f5f5f5;
+      white-space: pre-wrap;
+    }
+    
+    .error {
+      color: red;
+    }
+    
+    .success {
+      color: green;
+      font-weight: bold;
+    }
+    
+    .warning {
+      color: orange;
+      font-weight: bold;
+    }
+    
+    button {
+      padding: 8px 16px;
+      margin: 10px 10px 10px 0;
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    button:hover {
+      background-color: #1d4ed8;
+    }
+    
+    button.secondary {
+      background-color: #4b5563;
+    }
+    
+    button.success {
+      background-color: #047857;
+    }
+    
+    button.warning {
+      background-color: #d97706;
+    }
+    
+    .test-results {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 4px;
+    }
+    
+    .test-item {
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .test-item:last-child {
+      border-bottom: none;
+    }
+    
+    .path-box {
+      padding: 10px;
+      background-color: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 4px;
+      margin: 10px 0;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+  <h1>Vosk Sandbox Test</h1>
+  <p>This page tests Vosk functionality in a sandboxed environment.</p>
+  
+  <div class="test-results">
+    <div class="test-item">
+      <h3>Extension Information</h3>
+      <div id="extension-info">Checking extension ID...</div>
+    </div>
+    
+    <div class="test-item">
+      <h3>Vosk Library</h3>
+      <div id="vosk-status">Checking if Vosk is loaded...</div>
+    </div>
+    
+    <div class="test-item">
+      <h3>Model Path</h3>
+      <div id="model-path">No model path calculated yet</div>
+    </div>
+  </div>
+  
+  <h2>Tests</h2>
+  <div>
+    <button id="checkVoskBtn">Check Vosk Library</button>
+    <button id="testModelPathBtn" class="secondary">Test Model Path</button>
+    <button id="loadModelBtn" class="warning">Try Loading Model</button>
+    <button id="checkSandboxBtn" class="success">Check Sandbox Status</button>
+    <button id="testTranscriptionBtn" class="warning">Test Transcription</button>
+  </div>
+  
+  <h2>Log</h2>
+  <div id="log"></div>
+  
+  <!-- Add this BEFORE the Vosk library -->
+ <!-- <script src="../lib/vosk-browser-no-indexddb.js"></script> -->
+  <!-- Vosk library -->
+ <script src="../lib/vosk-browser.js"></script>
+  
+  <!-- External script file with UI logic -->
+  <script src="vosk-sandbox-ui.js"></script>
+</body>
+</html>

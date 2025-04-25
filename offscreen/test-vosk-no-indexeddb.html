@@ -1,0 +1,80 @@
+<!-- test-vosk-no-indexeddb.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vosk No-IndexedDB Test</title>
+</head>
+<body>
+  <h1>Vosk No-IndexedDB Test</h1>
+  <div id="log"></div>
+  
+  <button id="testLoadBtn">Test Load Model</button>
+  <button id="testTranscribeBtn" disabled>Test Transcription</button>
+  
+  <script type="module">
+    import { createModel, Recognizer, VERSION } from './lib/vosk-browser-no-indexeddb.js';
+    
+    let model = null;
+    let recognizer = null;
+    
+    function log(message) {
+      const logElem = document.getElementById('log');
+      const entry = document.createElement('div');
+      entry.textContent = message;
+      logElem.appendChild(entry);
+      console.log(message);
+    }
+    
+    async function testLoadModel() {
+      try {
+        log(`Testing Vosk no-IndexedDB version ${VERSION}`);
+        
+        const modelPath = './wasm/vosk-model-en-us-0.22-lgraph';
+        log(`Loading model from ${modelPath}`);
+        
+        model = await createModel(modelPath);
+        log('Model loaded successfully!');
+        
+        document.getElementById('testTranscribeBtn').disabled = false;
+      } catch (error) {
+        log(`Error loading model: ${error.message}`);
+      }
+    }
+    
+    async function testTranscription() {
+      try {
+        log('Creating recognizer...');
+        recognizer = new Recognizer({
+          model: model,
+          sampleRate: 16000
+        });
+        
+        log('Generating test audio data...');
+        // Create 1 second of test audio (16000 samples)
+        const testAudio = new Int16Array(16000);
+        // Fill with simple sine wave
+        for (let i = 0; i < testAudio.length; i++) {
+          testAudio[i] = Math.sin(i * 0.01) * 10000;
+        }
+        
+        log('Processing test audio...');
+        const accepted = recognizer.acceptWaveform(testAudio);
+        log(`Waveform accepted: ${accepted}`);
+        
+        const result = recognizer.finalResult();
+        log(`Transcription result: ${JSON.stringify(result)}`);
+        
+        log('Test completed successfully!');
+      } catch (error) {
+        log(`Error during transcription test: ${error.message}`);
+      }
+    }
+    
+    // Set up button event handlers
+    document.getElementById('testLoadBtn').addEventListener('click', testLoadModel);
+    document.getElementById('testTranscribeBtn').addEventListener('click', testTranscription);
+    
+    log('Test page loaded. Click "Test Load Model" to begin.');
+  </script>
+</body>
+</html>
